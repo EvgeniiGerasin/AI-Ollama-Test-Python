@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import ollama
 
 app = FastAPI(title="Test Case Generator API",
@@ -8,6 +9,18 @@ app = FastAPI(title="Test Case Generator API",
 # Инициализация клиента Ollama
 ollama_client = ollama.Client(host='http://127.0.0.1:11434')
 
+
+# Настройки CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "chrome-extension://ifilkkfhbldegbjggdapmcbcogcpllfd",  # Замените на ID вашего расширения
+        "http://localhost",  # Для тестирования из браузера
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class RequirementRequest(BaseModel):
     requirement: str
@@ -64,4 +77,4 @@ async def get_available_models():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
