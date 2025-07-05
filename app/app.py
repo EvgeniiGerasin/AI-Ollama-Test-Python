@@ -28,7 +28,7 @@ app.add_middleware(
 
 class RequirementRequest(BaseModel):
     requirement: str
-    model: str = "mistral:latest"
+    model: str = "deepseek-r1"
 
 
 @app.post("/generate_check_list/", summary="Генерация чек-листа по требованию")
@@ -87,15 +87,6 @@ async def for_test(request: RequirementRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-@app.get("/available-models/", summary="Получить список доступных моделей")
-async def get_available_models():
-    """Возвращает список моделей, доступных в Ollama"""
-    try:
-        models = ollama_client.list()
-        return {"available_models": [model['model'] for model in models['models']]}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
